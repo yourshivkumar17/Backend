@@ -9,7 +9,9 @@ const server = http.createServer((req, res) => {
 
     if (req.url === "/todos" && req.method === "GET") {
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(todos));
+        
+    
+        res.end(JSON.stringify(todos, null, 2));
     } 
     else if (req.url === "/" && req.method === "GET") {
         res.writeHead(200, { "Content-Type": "text/plain" });
