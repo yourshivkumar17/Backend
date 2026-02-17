@@ -1,92 +1,64 @@
 const http = require("http");
 const fs = require("fs");
-const path = require("path");
 
 const PORT = 3000;
-const filePath = path.join(__dirname, "notes.json");
+const file = "notes.json";
 
 const server = http.createServer((req, res) => {
 
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const pathname = url.pathname;
-
   res.setHeader("Content-Type", "application/json");
 
-  if (req.method === "GET" && pathname === "/") {
-    return res.end(JSON.stringify({ message: "Welcome to Notes API" }));
+  
+  if (req.method === "GET" && req.url === "/") {
+    return res.end(JSON.stringify({ msg: "Welcome Baby Notes API" }));
   }
 
-  if (req.method === "GET" && pathname === "/notes") {
+  
+  if (req.method === "GET" && req.url === "/notes") {
 
-    fs.readFile(filePath, "utf8", (err, data) => {
-
-      if (err) {
-        res.writeHead(500);
-        return res.end(JSON.stringify({ error: "File read error" }));
-      }
-
-      const notes = JSON.parse(data || "[]");
-      const id = url.searchParams.get("id");
-
-      if (id) {
-        const note = notes.find(n => n.id == id);
-        return res.end(JSON.stringify(note || { error: "Note not found" }));
-      }
-
-      res.end(JSON.stringify(notes));
+    fs.readFile(file, "utf8", (err, data) => {
+      if (err) return res.end(JSON.stringify([]));
+      res.end(data);
     });
 
     return;
   }
 
-  if (req.method === "POST" && pathname === "/notes") {
+ 
+  if (req.method === "POST" && req.url === "/notes") {
 
     let body = "";
 
-    req.on("data", chunk => {
-      body += chunk;
-    });
+    req.on("data", chunk => body += chunk);
 
     req.on("end", () => {
 
-      try {
-        const newNote = JSON.parse(body);
+      const newNote = JSON.parse(body);
 
-        fs.readFile(filePath, "utf8", (err, data) => {
+      fs.readFile(file, "utf8", (err, data) => {
 
-          const notes = JSON.parse(data || "[]");
+        let notes = [];
+        if (!err && data) notes = JSON.parse(data);
 
-          newNote.id = notes.length + 1;
-          notes.push(newNote);
+        newNote.id = notes.length + 1;
+        notes.push(newNote);
 
-          fs.writeFile(filePath, JSON.stringify(notes, null, 2), (err) => {
-
-            if (err) {
-              res.writeHead(500);
-              return res.end(JSON.stringify({ error: "File write error" }));
-            }
-
-            res.writeHead(201);
-            res.end(JSON.stringify(newNote));
-          });
-
+        fs.writeFile(file, JSON.stringify(notes), () => {
+          res.end(JSON.stringify(newNote));
         });
 
-      } catch {
-        res.writeHead(400);
-        res.end(JSON.stringify({ error: "Invalid JSON" }));
-      }
+      });
 
     });
 
     return;
   }
 
-  res.writeHead(404);
-  res.end(JSON.stringify({ error: "Route Not Found" }));
+  
+  res.end(JSON.stringify({ error: "Not Found" }));
 
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log("Server started on http://localhost:3000");
 });
