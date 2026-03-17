@@ -9,7 +9,7 @@ const server = http.createServer((req,res) => {
   if(req.url ==="/") {
      res.end("Welcome to Notes API");
 }
- else if(req.url ==="/notes" && req.method ==="GET") {
+ else if(req.url ==="/notes" && req.method ==="GET") { 
    fs.readFile("notes.json","utf8",(err,data) => {
       res.end(data);
  });
