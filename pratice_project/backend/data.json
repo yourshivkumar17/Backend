@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "name": "Shiv Kumar",
+    "course": "B.tech",
+    "email": "yourshivkumar17@gmail.com",
+    "id": 1773742452027
+  },
+  {
+    "name": "Nrup Pathak",
+    "course": "B.tech",
+    "email": "nruppathak@gmail.com",
+    "id": 1773742519157
+  },
+  {
+    "name": "Bipendra",
+    "course": "B.tech",
+    "email": "bipendra@gmail.com",
+    "id": 1773742541497
+  }
+]
